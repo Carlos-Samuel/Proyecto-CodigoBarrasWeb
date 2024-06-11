@@ -21,12 +21,7 @@ class UsuariosController extends Controller
     }
  
     public function create(){
-
-        //if (Auth::check()){
-        //    return redirect('/home');
-        //}
         return view('usuarios/create');
-
     }
  
     public function store(RegisterRequest $request)

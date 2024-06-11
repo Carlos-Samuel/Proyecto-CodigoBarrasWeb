@@ -22,6 +22,20 @@ return new class extends Migration
             $table->timestamps();
             $table->comment('Tabla para el manejo de usuarios y correos');
         });
+
+        DB::table('users')->insert([
+            [
+                'cedula' => '12345678',
+                'nombres' => 'Carlos Samuel',
+                'apellidos' => 'Medina Pardo',
+                'correo' => 'csamuelrox@gmail.com',
+                'password' => bcrypt('12345678'),
+                'activo' => true,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+        ]);
+
     }
     
 

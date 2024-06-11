@@ -36,11 +36,13 @@
                 <td>
                     <a href="{{ route('metodos_de_pago.show', $metodo->idMetodos_de_pago) }}" class="btn btn-info">Ver</a>
                     <a href="{{ route('metodos_de_pago.edit', $metodo->idMetodos_de_pago) }}" class="btn btn-warning">Editar</a>
+                    <!--
                     <form action="{{ route('metodos_de_pago.destroy', $metodo->idMetodos_de_pago) }}" method="POST" style="display:inline-block;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger">Eliminar</button>
                     </form>
+                    -->
                 </td>
             </tr>
             @endforeach

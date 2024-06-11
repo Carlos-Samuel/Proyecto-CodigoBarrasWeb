@@ -17,7 +17,7 @@ class CheckPermisos
     {
         $user = auth()->user();
         //$permisoId = 1; 
-        $tienePermiso = $user->permisos()->where('permiso_id', $permiso)->exists(); // Verifica si el usuario tiene el permiso
+        $tienePermiso = $user->permisos()->where('Permisos_idPermisos', $permiso)->exists(); // Verifica si el usuario tiene el permiso
         
         if ($tienePermiso){
             return $next($request);

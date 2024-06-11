@@ -22,6 +22,27 @@ return new class extends Migration
 
             $table->timestamps();
         });
+
+        $user = DB::table('users')->where('cedula', '12345678')->first();
+
+        if ($user) {
+            $userId = $user->idUsuarios;
+
+            $permissions = DB::table('permisos')->pluck('idPermisos');
+
+            $userPermissions = [];
+            foreach ($permissions as $permissionId) {
+                $userPermissions[] = [
+                    'Usuarios_idUsuarios' => $userId,
+                    'Permisos_idPermisos' => $permissionId,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+            }
+
+            DB::table('usuarios_has_permisos')->insert($userPermissions);
+        }
+
     }
 
     /**
