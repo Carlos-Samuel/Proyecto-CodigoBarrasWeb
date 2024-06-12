@@ -121,3 +121,4 @@ php artisan storage:link
 
 
 php artisan make:controller FacturasController
+php artisan make:controller InformesController

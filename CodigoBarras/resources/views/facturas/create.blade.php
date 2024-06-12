@@ -8,7 +8,7 @@
             <div class="container">
                 <input type="hidden" name="usuarioId" id="usuarioId" value="{{ Auth::id() }}">
                 <button id = "escanearBoton" class="btn btn-primary btn-block mb-3" style="height: 80px; font-size: 40px;" >Escanear Factura</button>
-                <input id = "codigoFacturaText" type="text" class="form-control" style="height: 50px;">
+                <input id = "codigoFacturaText" type="text" class="form-control" style="height: 50px; font-size: 30px;">
                 <br>
                 <h1 class="text-center">Datos Factura</h1>
                 <br>
@@ -17,7 +17,7 @@
                         <h2>Prefijo</h2>
                     </div>
                     <div class="col-md-6">
-                        <input id = "prefijoText" type="text" class="form-control" style="height: 50px;" readOnly>
+                        <input id = "prefijoText" type="text" class="form-control" style="height: 50px; font-size: 30px;" readOnly>
                     </div>
                 </div>
                 <br>
@@ -26,7 +26,7 @@
                         <h2># Factura</h2>
                     </div>
                     <div class="col-md-6">
-                        <input id = "numeroFacturaText" type="text" class="form-control" style="height: 50px;" readOnly>
+                        <input id = "numeroFacturaText" type="text" class="form-control" style="height: 50px; font-size: 30px;" readOnly>
                     </div>
                 </div>
                 <br>
@@ -35,7 +35,7 @@
                         <h2>Fecha</h2>
                     </div>
                     <div class="col-md-6">
-                        <input id = "fechaText" type="text" class="form-control" style="height: 50px;" readOnly>
+                        <input id = "fechaText" type="text" class="form-control" style="height: 50px; font-size: 30px;" readOnly>
                     </div>
                 </div>
                 <br>
@@ -44,7 +44,7 @@
                         <h2>Valor total</h2>
                     </div>
                     <div class="col-md-6">
-                        <input id = "valorTotalText" type="text" class="form-control" style="height: 50px;" readOnly>
+                        <input id = "valorTotalText" type="text" class="form-control" style="height: 50px; font-size: 30px;" readOnly>
                     </div>
                 </div>
                 <br>
@@ -53,7 +53,7 @@
                         <h2>Pendiente</h2>
                     </div>
                     <div class="col-md-6">
-                        <input id = "pendienteText" type="text" class="form-control" style="height: 50px;" readOnly>
+                        <input id = "pendienteText" type="text" class="form-control" style="height: 50px; font-size: 30px;" readOnly>
                     </div>
                 </div>
                 <br>
@@ -95,6 +95,7 @@
             var total = 0;
             var pagado = 0;
             var idUsuario = $('#usuarioId').val();
+            var terminado = false;
             /*
             $('.entrada-pago').each(function() {
                 new Cleave(this, {
@@ -128,9 +129,16 @@
                 });
 
                 if (sumaTemporalPagos > total){
-                    alert("Pagos registrados superan el total de la factura")
+                    Swal.fire({
+                            icon: 'error',
+                            title: 'Total superado',
+                            text: 'Pagos registrados superan el total de la factura',
+                    });
+
                     $(this).val('');
+
                     sumarPagos();
+                    
                     return ; 
                 }else{
                     $.ajax({
@@ -154,16 +162,17 @@
                 }
             });
 
-            $('.metodo-imagen').on('click', function() {
-                var metodoId = $(this).data('id');
-                console.log(metodoId);
-            });
+            //$('.metodo-imagen').on('click', function() {
+            //    var metodoId = $(this).data('id');
+            //    console.log(metodoId);
+            //});
 
             $('#escanearBoton').on('click', function() {
                 var codigo = $('#codigoFacturaText').val();
                 if (codigo === '') {
                     $('#codigoFacturaText').focus();
                 } else {
+                    limpiarInterfaz();
                     try {
                         var partes = codigo.split("'");
                         if (partes.length !== 4) {
@@ -184,7 +193,7 @@
                             $('#valorTotalText').val(formatearComoPesosColombianos(parseFloat(parte4)));
 
                             checkOrCreateFactura(parte1, parte2, parte3, parte4)
-
+                            $('#codigoFacturaText').val('');
                         }
                     } catch (error) {
                         Swal.fire({
@@ -246,17 +255,29 @@
                         _token: '{{ csrf_token() }}'
                     },
                     success: function(response) {
-                        total = valorTotal;
-                        idFactura = response.idFacturas;
-                        if (response.exists) {
-                            llenarValores(response.pagos);
-                            //alert('La factura ya existe. ' + idFactura);
-                            
-                        } else {
-                            //alert('La factura ha sido creada con el id.' + idFactura);
-                        }
-                        $('.entrada-pago').removeAttr('disabled');
+                        terminado = response.terminado;
                         botonAnular.removeAttribute('disabled');
+                        if (response.terminado) {
+                            $('.entrada-pago').prop('disabled', true);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Factura terminada',
+                                text: 'Esta factura ya fue cerrada',
+                            });
+                            total = valorTotal;
+                            idFactura = response.idFacturas;  
+                            llenarValores(response.pagos);
+                        } else if (response.exists) {
+                            total = valorTotal;
+                            idFactura = response.idFacturas;  
+                            llenarValores(response.pagos);
+                            $('.entrada-pago').removeAttr('disabled');                          
+                        } else {
+                            total = valorTotal;
+                            idFactura = response.idFacturas;
+                            $('.entrada-pago').removeAttr('disabled');
+                        }
+                        
                     },
                     error: function(xhr, status, error) {
                         console.error(xhr.responseText);
@@ -274,19 +295,89 @@
                     }
                 });
                 pagado = sumaPagos;
-                console.log("Total: " + total + " sumaPagos: " + sumaPagos);
 
                 var pendiente = parseFloat(total) - parseFloat(sumaPagos);
 
                 $('#pendienteText').val(formatearComoPesosColombianos(pendiente));
 
-                if (pendiente === 0) {
+                if (pendiente === 0 && !terminado) {
                     botonCerrar.removeAttribute('disabled');
                 } else {
                     botonCerrar.setAttribute('disabled', 'disabled');
                 }
 
             }
+
+            $('#botonAnular').on('click', function() {
+                
+                $.ajax({
+                    url: '/factura/anular',
+                    method: 'POST',
+                    data: {
+                        idFactura: idFactura,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        limpiarInterfaz();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Anulado terminado',
+                            text: response.mensaje,
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                        alert('Ocurrió un error al procesar la solicitud.');
+                    }
+                });
+
+            });
+
+            function limpiarInterfaz(){
+
+                idFactura = "";
+                total = 0;
+                pagado = 0;
+
+                $('#prefijoText').val('');
+                $('#numeroFacturaText').val('');
+                $('#fechaText').val('');
+                $('#valorTotalText').val('');
+                $('#pendienteText').val('');
+
+                $('.entrada-pago').each(function() {
+                    $(this).val('');
+                });
+
+                botonAnular.setAttribute('disabled', 'disabled');
+
+            }
+
+            $('#botonCerrar').on('click', function() {
+                
+                $.ajax({
+                    url: '/factura/cerrar',
+                    method: 'POST',
+                    data: {
+                        idFactura: idFactura,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        limpiarInterfaz();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Cerrado',
+                            text: response.mensaje,
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                        alert('Ocurrió un error al procesar la solicitud.');
+                    }
+                });
+                
+
+            });
 
         });
     </script>

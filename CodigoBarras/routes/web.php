@@ -8,6 +8,7 @@ use App\Http\Controllers\FacturasController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LogoutController;
+use App\Http\Controllers\InformesController;
 
 
 
@@ -50,5 +51,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/facturas/permissions', [FacturasController::class, 'create'])->name('facturas.create')->middleware(['check.permisos: 1']);
     Route::post('/factura/check-or-create', [FacturasController::class, 'checkOrCreate'])->middleware(['check.permisos: 1']);
     Route::post('/pago-factura/register', [FacturasController::class, 'registarPago'])->middleware(['check.permisos: 1']);
+    Route::post('/factura/anular', [FacturasController::class, 'anular'])->middleware(['check.permisos: 1']);
+    Route::post('/factura/cerrar', [FacturasController::class, 'cerrar'])->middleware(['check.permisos: 1']);
 
+    //Informes
+    
+    Route::get('/informes/informe1', [InformesController::class, 'indexInforme1'])->name('informes.informe1')->middleware(['check.permisos: 2']);
+    Route::get('/informes/dataTableInforme1', [InformesController::class, 'getDataTableInforme1'])->name('informes.dataTableInforme1')->middleware(['check.permisos: 2']);
+
+    Route::get('/informes/informe2', [InformesController::class, 'indexInforme2'])->name('informes.informe2')->middleware(['check.permisos: 3']);
+    Route::get('/informes/dataTableInforme2', [InformesController::class, 'getDataTableInforme2'])->name('informes.dataTableInforme2')->middleware(['check.permisos: 3']);
 });

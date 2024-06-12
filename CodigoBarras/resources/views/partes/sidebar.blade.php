@@ -37,16 +37,17 @@
 <hr class="sidebar-divider">
 @endif
 
+@if(HelperPer::checkPermisos(2) || HelperPer::checkPermisos(3) || HelperPer::checkPermisos(4) || HelperPer::checkPermisos(5) || HelperPer::checkPermisos(6))
 <!-- Heading -->
 <div class="sidebar-heading">
     Administrativo
 </div>
-
+@endif
 <!-- Nav Item - Tables -->
 
 @if(HelperPer::checkPermisos(2))
 <li class="nav-item">
-    <a class="nav-link" href="">
+    <a class="nav-link" href="{{ route('informes.informe1') }}">
         <i class="fas fa-fw fa-table"></i>
         <span>Informe 1</span>
     </a>
@@ -55,7 +56,7 @@
 
 @if(HelperPer::checkPermisos(3))
 <li class="nav-item">
-    <a class="nav-link" href="">
+    <a class="nav-link" href="{{ route('informes.informe2') }}">
         <i class="fas fa-fw fa-table"></i>
         <span>Informe 2</span>
     </a>
@@ -89,8 +90,10 @@
 </li>
 @endif
 
+@if(HelperPer::checkPermisos(2) || HelperPer::checkPermisos(3) || HelperPer::checkPermisos(4) || HelperPer::checkPermisos(5) || HelperPer::checkPermisos(6))
 <!-- Divider -->
 <hr class="sidebar-divider d-none d-md-block">
+@endif
 
 <!-- Sidebar Toggler (Sidebar) -->
 <div class="text-center d-none d-md-inline">

@@ -38,9 +38,9 @@
 						</div>
 						<button type="submit" class="btn btn-primary btn-block">Iniciar sesión</button>
 					</form>
-				
+					<!--
 					<a href = "/register"><button class="btn btn-success btn-block">Registrar Usuario</button></a>
-					
+					-->
 				</div>
 			</div>
 		</div>

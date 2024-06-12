@@ -27,23 +27,41 @@ class FacturasController extends Controller
         $valorTotal = $request->input('valorTotal');
         
 
-        $factura = Factura::where('NumFactura', $numFactura)->first();
+        $factura = Factura::where('NumFactura', $numFactura)
+                    ->where('estado', true)
+                    ->first();
 
         if ($factura) {
-            $pagos = PagoFactura::where('Facturas_idFacturas', $factura->idFacturas)
+
+            if ($factura->Terminado){
+                $pagos = PagoFactura::where('Facturas_idFacturas', $factura->idFacturas)
+                ->get(['Metodos_de_pago_idMetodos_de_pago', 'Cantidad'])
+                ->toArray();
+
+                return response()->json([
+                    'exists' => true,
+                    'terminado' => true,
+                    'idFacturas' => $factura->idFacturas,
+                    'pagos' => $pagos
+                ]);
+            }else{
+                $pagos = PagoFactura::where('Facturas_idFacturas', $factura->idFacturas)
                 ->get(['Metodos_de_pago_idMetodos_de_pago', 'Cantidad'])
                 ->toArray();
             
-            return response()->json([
-                'exists' => true,
-                'idFacturas' => $factura->idFacturas,
-                'pagos' => $pagos
-            ]);
+                return response()->json([
+                    'exists' => true,
+                    'terminado' => false,
+                    'idFacturas' => $factura->idFacturas,
+                    'pagos' => $pagos
+                ]);
+            }
         } else {
             
             $nuevaFactura = Factura::create(['Prefijo' => $prefijo, 'NumFactura' => $numFactura, 'fechaRegistrada' => $fechaRegistrada, 'ValorFactura' => $valorTotal]);
             return response()->json([
                 'idFacturas' => $nuevaFactura->idFacturas,
+                'terminado' => false,
                 'exists' => false
             ]);
         }
@@ -72,6 +90,53 @@ class FacturasController extends Controller
         return response()->json([
             'message' => 'Pagos registrados o actualizados exitosamente.'
         ]);
+    }
+
+    public function anular(Request $request)
+    {
+        $idFactura = $request->input('idFactura');
+
+        $factura = Factura::where('idFacturas', $idFactura)
+                    ->where('estado', true)
+                    ->first();
+
+        if ($factura) {
+            $factura->estado = false;
+            $factura->save();
+
+            return response()->json([
+                'mensaje' => "Factura anulada"
+            ]);
+        }
+
+        return response()->json([
+            'mensaje' => "Factura no encontrada"
+        ]);
+
+    }
+
+    public function cerrar(Request $request)
+    {
+        $idFactura = $request->input('idFactura');
+
+        $factura = Factura::where('idFacturas', $idFactura)
+                    ->where('estado', true)
+                    ->first();
+
+        if ($factura) {
+            $factura->Terminado = true;
+            $factura->fechaTerminada = now();
+            $factura->save();
+
+            return response()->json([
+                'mensaje' => "Factura cerrada exitosamente"
+            ]);
+        }
+
+        return response()->json([
+            'mensaje' => "Factura no encontrada"
+        ]);
+
     }
 
 }

@@ -26,8 +26,8 @@ class EditarUserRequest extends FormRequest
             'nombres' => 'required',
             'apellidos' => 'required',
             'correo' => 'required|email',
-            'password' => 'required|min:8',
-            'password_confirmation' => 'required|same:password',
+            'password' => 'nullable|min:8',
+            'password_confirmation' => 'same:password',
         ];
         
     }
