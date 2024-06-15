@@ -122,3 +122,49 @@ php artisan storage:link
 
 php artisan make:controller FacturasController
 php artisan make:controller InformesController
+
+
+Pasos para instalar en windows server
+
+1) Instalar xampp: https://www.apachefriends.org/es/index.html
+
+2) Configurar xampp para que se inicie automaticamente
+
+
+    Configurar XAMPP para iniciar automáticamente con Windows:
+
+        Abre el Panel de Control de XAMPP.
+        Haz clic en el botón de configuración (config) junto a Apache y MySQL.
+        Selecciona la opción "Service" para ambos servicios para instalarlos como servicios de Windows.
+    
+    Configurar los servicios para que se inicien automáticamente:
+
+        Abre la consola de servicios de Windows (puedes buscar "services.msc" en el menú de inicio).
+        Busca los servicios "Apache2.4" y "MySQL".
+        Haz clic derecho en cada servicio, selecciona "Propiedades" y cambia el tipo de inicio a "Automático".
+
+3) Instalar composer: https://getcomposer.org/download/
+
+3) Hay que establecer la variable de entorno de composer en el path
+
+4) Copiar el proyecto de laravel aquí C:\xampp\htdocs, este README no, ni los dockers, la carpeta CodigoBarras
+
+5) Configurar la conexión a la base de datos en el .env
+
+6) Ejecutar esto php artisan key:generate
+
+7) Ejecutar esto php artisan migrate
+
+8) Asegurarse de que el directorio storage y bootstrap/cache tienen permisos de escritura
+
+9) Revisar que los servicios se inicien automaticamente al arrancar el servidor revisando los servicios en 'services.msc'
+
+win + R
+
+services.msv
+
+
+
+Busco los dos de apache y MYSQL 
+
+Propiedades, tipo de inicio automatico, aplicar, aceptar
