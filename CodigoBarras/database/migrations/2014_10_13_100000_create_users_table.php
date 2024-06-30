@@ -26,9 +26,9 @@ return new class extends Migration
         DB::table('users')->insert([
             [
                 'cedula' => '12345678',
-                'nombres' => 'Carlos Samuel',
-                'apellidos' => 'Medina Pardo',
-                'correo' => 'csamuelrox@gmail.com',
+                'nombres' => 'Administrador',
+                'apellidos' => 'Absoluto',
+                'correo' => 'admin@gmail.com',
                 'password' => bcrypt('12345678'),
                 'activo' => true,
                 'created_at' => now(),

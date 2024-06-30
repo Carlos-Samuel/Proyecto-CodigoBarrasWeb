@@ -7,8 +7,9 @@
         <div class="col-md-6">
             <div class="container">
                 <input type="hidden" name="usuarioId" id="usuarioId" value="{{ Auth::id() }}">
-                <button id = "escanearBoton" class="btn btn-primary btn-block mb-3" style="height: 80px; font-size: 40px;" >Escanear Factura</button>
-                <input id = "codigoFacturaText" type="text" class="form-control" style="height: 50px; font-size: 30px;">
+                <input id = "codigoFacturaText" type="text" class="form-control" style="height: 60px; font-size: 30px;" placeholder = "Escanear Factura">
+                <br>
+                <button id = "escanearBoton" class="btn btn-primary btn-block mb-3" style="height: 80px; font-size: 40px;" >Descargar Factura</button>
                 <br>
                 <h1 class="text-center">Datos Factura</h1>
                 <br>
@@ -90,6 +91,8 @@
     <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0"></script>
     <script>
         $(document).ready(function() {
+
+            $('#codigoFacturaText').focus();
 
             var idFactura = "";
             var total = 0;

@@ -130,7 +130,6 @@ Pasos para instalar en windows server
 
 2) Configurar xampp para que se inicie automaticamente
 
-
     Configurar XAMPP para iniciar automáticamente con Windows:
 
         Abre el Panel de Control de XAMPP.
