@@ -396,6 +396,7 @@
                 let valorAPagar = parseInt(document.getElementById('pendienteText').value);
                 let cambio = recibido - valorAPagar;
 
+                
 
                 if (isNaN(recibido)){
                     Swal.fire({
@@ -433,6 +434,8 @@
 
                 }
 
+                /*
+
                 const denominaciones = [
                     { valor: 50000, nombre: '$50,000' },
                     { valor: 20000, nombre: '$20,000' },
@@ -462,9 +465,11 @@
                     resultado += ` y hacen falta ${cambio} pesos.`  ;
                 }
 
+                */
+                cambio = cambio.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
                 Swal.fire({
-                    title: 'Billetes a devolver',
-                    text: resultado,
+                    title: 'El valor a devolver es ' + cambio,
+                    text: 'Lo faltante es: ' + valorAPagar,
                     icon: 'info',
                     confirmButtonText: 'Aceptar'
                 });
