@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use DateTime;
+use Carbon\Carbon;
 use App\Models\Factura;
 use App\Models\PagoFactura;
 use App\Models\MetodoDePago;
@@ -57,7 +58,6 @@ class FacturasController extends Controller
                 ]);
             }
         } else {
-            
             $nuevaFactura = Factura::create(['Prefijo' => $prefijo, 'NumFactura' => $numFactura, 'fechaRegistrada' => $fechaRegistrada, 'ValorFactura' => $valorTotal]);
             return response()->json([
                 'idFacturas' => $nuevaFactura->idFacturas,
@@ -84,6 +84,7 @@ class FacturasController extends Controller
                 WHERE Facturas_idFacturas = ? AND Metodos_de_pago_idMetodos_de_pago = ?', 
             [$Cantidad, $Usuarios_idUsuarios, $Facturas_idFacturas, $Metodos_de_pago_idMetodos_de_pago]);
         } else {
+            
             PagoFactura::create(['Facturas_idFacturas' => $Facturas_idFacturas, 'Metodos_de_pago_idMetodos_de_pago' => $Metodos_de_pago_idMetodos_de_pago, 'Cantidad' => $Cantidad, 'Usuarios_idUsuarios' => $Usuarios_idUsuarios]);
         }
 
@@ -124,8 +125,9 @@ class FacturasController extends Controller
                     ->first();
 
         if ($factura) {
+            $fechaTerminada = Carbon::now('America/Bogota');
             $factura->Terminado = true;
-            $factura->fechaTerminada = now();
+            $factura->fechaTerminada = $fechaTerminada;
             $factura->save();
 
             return response()->json([

@@ -60,6 +60,15 @@
                 <br>
                 <div class="row">
                     <div class="col-md-6">
+                        <input type="number" id="inputRecibido" placeholder="Dinero Recibido" style="height: 50px; font-size: 30px;">
+                    </div>
+                    <div class="col-md-6">
+                        <button id="botonCalcular" style="height: 50px; font-size: 30px;" >Calcular Cambio</button>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-6">
                         <button id = "botonAnular" class="btn btn-danger btn-block mb-3" style="height: 80px; font-size: 40px;" disabled>Anular Factura</button>
                     </div>
                     <div class="col-md-6">
@@ -77,7 +86,7 @@
                         <img src="{{ asset('storage/' . $metodo->Imagen) }}" alt="Imagen del método de pago" style="height: 100px; object-fit: cover;" data-id="{{ $metodo->idMetodos_de_pago }}" class="metodo-imagen">
                     </div>
                     <div class="col-md-6">
-                        <input type="text" class="form-control entrada-pago" data-id="{{ $metodo->idMetodos_de_pago }}" style="height: 100px; font-size: 40px;" disabled>
+                        <input type="number" class="form-control entrada-pago" data-id="{{ $metodo->idMetodos_de_pago }}" style="height: 100px; font-size: 40px;" disabled>
                     </div>
                 </div>
                 <br>
@@ -91,7 +100,7 @@
     <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0"></script>
     <script>
         $(document).ready(function() {
-
+            document.getElementById('botonCalcular').addEventListener('click', calcularCambio);
             $('#codigoFacturaText').focus();
 
             var idFactura = "";
@@ -381,6 +390,85 @@
                 
 
             });
+
+            function calcularCambio() {
+                let recibido = parseInt(document.getElementById('inputRecibido').value);
+                let valorAPagar = parseInt(document.getElementById('pendienteText').value);
+                let cambio = recibido - valorAPagar;
+
+
+                if (isNaN(recibido)){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al Calcular Cambio',
+                        text: 'Ingrese cuanto dinero fue entregadó',
+                    });
+                    return ;
+                }
+
+                if (isNaN(valorAPagar)){
+
+                    valorAPagar = parseInt(document.getElementById('valorTotalText').value);
+
+                    if (isNaN(valorAPagar)){
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al Calcular Cambio',
+                            text: 'El valor pendiente esta vacio',
+                        });
+                        return ;
+
+                    }
+                }
+
+                if (valorAPagar > recibido){
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al Calcular Cambio',
+                        text: 'El valor pendiente es mayor que el dinero recibido',
+                    });
+                    return ;
+
+                }
+
+                const denominaciones = [
+                    { valor: 50000, nombre: '$50,000' },
+                    { valor: 20000, nombre: '$20,000' },
+                    { valor: 10000, nombre: '$10,000' },
+                    { valor: 5000, nombre: '$5,000' },
+                    { valor: 2000, nombre: '$2,000' },
+                    { valor: 1000, nombre: '$1,000' },
+                    { valor: 500, nombre: '$500' },
+                    { valor: 200, nombre: '$200' },
+                    { valor: 100, nombre: '$100' },
+                    { valor: 50, nombre: '$50' }
+                ];
+
+                let resultado = 'Cambio: \n';
+
+                denominaciones.forEach(denominacion => {
+                    if (cambio > 50){
+                        if (cambio >= denominacion.valor) {
+                            const cantidad = Math.floor(cambio / denominacion.valor);
+                            cambio -= cantidad * denominacion.valor;
+                            resultado += `${cantidad} x ${denominacion.nombre}\n`;
+                        }
+                    }
+                });
+
+                if (cambio != 0){
+                    resultado += ` y hacen falta ${cambio} pesos.`  ;
+                }
+
+                Swal.fire({
+                    title: 'Billetes a devolver',
+                    text: resultado,
+                    icon: 'info',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
 
         });
     </script>

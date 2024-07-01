@@ -27,6 +27,7 @@
             <div class="col-md-4">
                 <h3>Medio de pago</h3>
                 <select id="metodoDePago" class="input">
+                    <option value="-1" selected>Todos los métodos</option>
                     @foreach($metodos as $metodo)
                         <option value="{{ $metodo->idMetodos_de_pago }}" {{ $loop->first ? 'selected' : '' }}>
                             {{ $metodo->Descripcion }}
@@ -34,17 +35,17 @@
                     @endforeach
                 </select>
             </div>
-
         </div>
         <hr>
         <br>
         <table id="tablaInforme2" class="display" style="width:100%">
             <thead>
                 <tr>
+                    <th>Metodo</th>
                     <th>Prefijo</th>
                     <th>Numero Factura</th>
+                    <th>Fecha Factura</th>
                     <th>Fecha Registrada</th>
-                    <th>Fecha Cerrada</th>
                     <th>Valor total</th>
                     <th>Medio de pago</th>
                 </tr>
@@ -92,25 +93,64 @@
                     "data": function (d) {
                         d.fInicio = $('#fInicio').val();
                         d.fFinal = $('#fFinal').val();
-                        d.metodoDePago =  $('#metodoDePago').val();
+                        d.metodoDePago = $('#metodoDePago').val();
                     }
                 },
                 "columns": [
+                    { "data": "Metodo" },
                     { "data": "Prefijo" },
                     { "data": "NumFactura" },
                     { "data": "fechaRegistrada" },
                     { "data": "fechaTerminada" },
-                    { "data": "ValorFactura" },
-                    { "data": "Cantidad" }
+                    { 
+                        "data": "ValorFactura",
+                        "render": $.fn.dataTable.render.number(',', '.', 0, '$')
+                    },
+                    { 
+                        "data": "Cantidad",
+                        "render": $.fn.dataTable.render.number(',', '.', 0, '$')
+                    }
                 ],
                 "language": {
                     "url": "{{ asset('js/Spanish.json') }}"
                 },
-                "dom": 'Bfrtip', 
+                "dom": 'Bfrtip',
                 "buttons": [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
+                    {
+                        extend: 'copy',
+                        title: function() {
+                            return 'Detalle de ventas del ' + $('#fInicio').val() + ' al ' + $('#fFinal').val();
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        title: function() {
+                            return 'Detalle de ventas del ' + $('#fInicio').val() + ' al ' + $('#fFinal').val();
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        title: function() {
+                            return 'Detalle de ventas del ' + $('#fInicio').val() + ' al ' + $('#fFinal').val();
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        title: function() {
+                            return 'Detalle de ventas del ' + $('#fInicio').val() + ' al ' + $('#fFinal').val();
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        title: function() {
+                            return 'Detalle de ventas del ' + $('#fInicio').val() + ' al ' + $('#fFinal').val();
+                        }
+                    }
                 ]
             });
+
+
+
         });
     </script>
 @endsection

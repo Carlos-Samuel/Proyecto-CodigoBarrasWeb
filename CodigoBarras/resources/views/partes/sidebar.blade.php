@@ -49,7 +49,7 @@
 <li class="nav-item">
     <a class="nav-link" href="{{ route('informes.informe1') }}">
         <i class="fas fa-fw fa-table"></i>
-        <span>Informe 1</span>
+        <span>Consolidado de ventas por medio de pago</span>
     </a>
 </li>
 @endif
@@ -58,7 +58,7 @@
 <li class="nav-item">
     <a class="nav-link" href="{{ route('informes.informe2') }}">
         <i class="fas fa-fw fa-table"></i>
-        <span>Informe 2</span>
+        <span>Detalle de ventas por medio de pago</span>
     </a>
 </li>
 @endif

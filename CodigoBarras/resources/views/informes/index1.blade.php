@@ -13,7 +13,7 @@
 @section('content')
     <div class="global-container">
         <h1>Consolidado de ventas por medio de pago</h1>
-        <p>Las fechas limite son las escaneadas, y los datos consolidades son solo los de estado cerrado que no han sido anulados</p>
+        <p>Las fechas limite son las escaneadas, y los datos consolidados son solo los de estado cerrado que no han sido anulados</p>
         <hr>
         <div class="row">
             <div class="col-md-6">
@@ -68,7 +68,6 @@
                     reloadTable();
                 }
             });
-
             $('#tablaInforme1').DataTable({
                 "processing": true,
                 "serverSide": true,
@@ -81,16 +80,49 @@
                 },
                 "columns": [
                     { "data": "metodo" },
-                    { "data": "total" }
+                    { 
+                        "data": "total",
+                        "render": $.fn.dataTable.render.number(',', '.', 0, '$')
+                    }
                 ],
                 "language": {
                     "url": "{{ asset('js/Spanish.json') }}"
                 },
-                "dom": 'Bfrtip', 
+                "dom": 'Bfrtip',
                 "buttons": [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
+                    {
+                        extend: 'copy',
+                        title: function() {
+                            return 'Consolidado de ventas del ' + $('#fInicio').val() + ' al ' + $('#fFinal').val();
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        title: function() {
+                            return 'Consolidado de ventas del ' + $('#fInicio').val() + ' al ' + $('#fFinal').val();
+                        }
+                    },
+                    {
+                        extend: 'excel',
+                        title: function() {
+                            return 'Consolidado de ventas del ' + $('#fInicio').val() + ' al ' + $('#fFinal').val();
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        title: function() {
+                            return 'Consolidado de ventas del ' + $('#fInicio').val() + ' al ' + $('#fFinal').val();
+                        }
+                    },
+                    {
+                        extend: 'print',
+                        title: function() {
+                            return 'Consolidado de ventas del ' + $('#fInicio').val() + ' al ' + $('#fFinal').val();
+                        }
+                    }
                 ]
             });
+
         });
     </script>
 @endsection
