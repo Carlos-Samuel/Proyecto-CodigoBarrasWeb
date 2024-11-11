@@ -9,7 +9,7 @@
                 <input type="hidden" name="usuarioId" id="usuarioId" value="{{ Auth::id() }}">
                 <input id = "codigoFacturaText" type="text" class="form-control" style="height: 60px; font-size: 30px;" placeholder = "Escanear Factura">
                 <br>
-                <button id = "escanearBoton" class="btn btn-primary btn-block mb-3" style="height: 80px; font-size: 40px;" >Descargar Factura</button>
+                <button id = "escanearBoton" class="btn btn-primary btn-block mb-3" style="height: 80px; font-size: 40px;" >Procesar</button>
                 <br>
                 <h1 class="text-center">Datos Factura</h1>
                 <br>
@@ -60,19 +60,19 @@
                 <br>
                 <div class="row">
                     <div class="col-md-6">
-                        <input type="number" id="inputRecibido" placeholder="Dinero Recibido" style="height: 50px; font-size: 30px;">
+                        <input type="text" id="inputRecibido" placeholder="Dinero Recibido" style="height: 70px; font-size: 30px;">
                     </div>
                     <div class="col-md-6">
-                        <button id="botonCalcular" style="height: 50px; font-size: 30px;" >Calcular Cambio</button>
+                        <button id="botonCalcular" style="height: 70px; font-size: 15px;" >Calcular Cambio</button>
                     </div>
                 </div>
                 <br>
                 <div class="row">
                     <div class="col-md-6">
-                        <button id = "botonAnular" class="btn btn-danger btn-block mb-3" style="height: 80px; font-size: 40px;" disabled>Anular Factura</button>
+                        <button id = "botonAnular" class="btn btn-danger btn-block mb-3" style="height: 80px; font-size: 40px;" disabled>Anular</button>
                     </div>
                     <div class="col-md-6">
-                        <button id = "botonCerrar" class="btn btn-primary btn-block mb-3" style="height: 80px; font-size: 40px;" disabled>Cerrar Factura</button>
+                        <button id = "botonCerrar" class="btn btn-primary btn-block mb-3" style="height: 80px; font-size: 40px;" disabled>Cerrar</button>
                     </div>
                 </div>
             </div>
@@ -86,7 +86,7 @@
                         <img src="{{ asset('storage/' . $metodo->Imagen) }}" alt="Imagen del método de pago" style="height: 100px; object-fit: cover;" data-id="{{ $metodo->idMetodos_de_pago }}" class="metodo-imagen">
                     </div>
                     <div class="col-md-6">
-                        <input type="number" class="form-control entrada-pago" data-id="{{ $metodo->idMetodos_de_pago }}" style="height: 100px; font-size: 40px;" disabled>
+                        <input type="text" class="form-control entrada-pago" data-id="{{ $metodo->idMetodos_de_pago }}" style="height: 100px; font-size: 40px;" disabled>
                     </div>
                 </div>
                 <br>
@@ -108,25 +108,23 @@
             var pagado = 0;
             var idUsuario = $('#usuarioId').val();
             var terminado = false;
-            /*
-            $('.entrada-pago').each(function() {
-                new Cleave(this, {
-                    numeral: true,
-                    numeralThousandsGroupStyle: 'thousand',
-                    numeralDecimalMark: '.',
-                    delimiter: ',',
-                    prefix: '$ ',
-                    numeralPositiveOnly: true,
-                    rawValueTrimPrefix: true
-                });
-            });
-            */
+
+            function limpiarNumeros(numero){
+                return numero.replace(/[^\d-]/g, '');
+            }
+            
             $('.entrada-pago').on('blur', function() {
-                var rawValue = $(this).val().replace(/[^\d.-]/g, '');
+                var rawValue = limpiarNumeros($(this).val());
 
                 if (rawValue == null || rawValue == undefined || rawValue == ''){
                     rawValue = 0;
                 }
+
+
+                let valorFormateado = formatearComoPesosColombianos(rawValue);
+
+
+                $(this).val(valorFormateado);
 
                 var metodoId = $(this).data('id');
                 console.log('Valor numérico: ' + rawValue + ', ID del método de pago: ' + metodoId + ' el idFactura: ' + idFactura + ' al Usuario: ' + idUsuario);
@@ -134,7 +132,7 @@
                 var sumaTemporalPagos = 0;
 
                 $('.entrada-pago').each(function() {
-                    var crudo = $(this).val().replace(/[^\d,-]/g, '');
+                    var crudo = limpiarNumeros($(this).val());
                     if (crudo) {
                         sumaTemporalPagos += parseFloat(crudo);
                     }
@@ -220,7 +218,7 @@
 
             function formatearComoPesosColombianos(valor) {
                 //return valor.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
-                /*
+                
                 const tempInput = document.createElement('input');
                 document.body.appendChild(tempInput);
 
@@ -229,7 +227,6 @@
                     numeralThousandsGroupStyle: 'thousand',
                     numeralDecimalMark: '.',
                     delimiter: ',',
-                    prefix: '$ ',
                     numeralPositiveOnly: true,
                     rawValueTrimPrefix: true
                 });
@@ -242,7 +239,7 @@
                 document.body.removeChild(tempInput);
                 
                 return valorFormateado;
-                */
+                
                return valor;
             }
 
@@ -299,9 +296,11 @@
             }
 
             function sumarPagos(){
+                console.log("Entra aqui automaticamente");
                 var sumaPagos = 0;
                 $('.entrada-pago').each(function() {
-                    var rawValue = $(this).val().replace(/[^\d,-]/g, '');
+                    var rawValue = limpiarNumeros($(this).val());
+                    console.log(rawValue);
                     if (rawValue) {
                         sumaPagos += parseFloat(rawValue);
                     }
@@ -391,12 +390,26 @@
 
             });
 
-            function calcularCambio() {
-                let recibido = parseInt(document.getElementById('inputRecibido').value);
-                let valorAPagar = parseInt(document.getElementById('pendienteText').value);
-                let cambio = recibido - valorAPagar;
+            $('#inputRecibido').on('blur', function() {
+                var rawValue = limpiarNumeros($(this).val());
 
-                
+                if (rawValue == null || rawValue == undefined || rawValue == ''){
+                    rawValue = 0;
+                }
+
+
+                let valorFormateado = formatearComoPesosColombianos(rawValue);
+
+
+                $(this).val(valorFormateado);
+            
+            });
+
+            function calcularCambio() {
+                let recibido = parseInt(limpiarNumeros(document.getElementById('inputRecibido').value));
+                let valorAPagar = parseInt(limpiarNumeros(document.getElementById('pendienteText').value));
+
+                let cambio = recibido - valorAPagar;
 
                 if (isNaN(recibido)){
                     Swal.fire({
@@ -434,42 +447,11 @@
 
                 }
 
-                /*
-
-                const denominaciones = [
-                    { valor: 50000, nombre: '$50,000' },
-                    { valor: 20000, nombre: '$20,000' },
-                    { valor: 10000, nombre: '$10,000' },
-                    { valor: 5000, nombre: '$5,000' },
-                    { valor: 2000, nombre: '$2,000' },
-                    { valor: 1000, nombre: '$1,000' },
-                    { valor: 500, nombre: '$500' },
-                    { valor: 200, nombre: '$200' },
-                    { valor: 100, nombre: '$100' },
-                    { valor: 50, nombre: '$50' }
-                ];
-
-                let resultado = 'Cambio: \n';
-
-                denominaciones.forEach(denominacion => {
-                    if (cambio > 50){
-                        if (cambio >= denominacion.valor) {
-                            const cantidad = Math.floor(cambio / denominacion.valor);
-                            cambio -= cantidad * denominacion.valor;
-                            resultado += `${cantidad} x ${denominacion.nombre}\n`;
-                        }
-                    }
-                });
-
-                if (cambio != 0){
-                    resultado += ` y hacen falta ${cambio} pesos.`  ;
-                }
-
-                */
-                cambio = cambio.toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
+                cambio = formatearComoPesosColombianos(cambio);
+                valorAPagar = formatearComoPesosColombianos(valorAPagar);
                 Swal.fire({
-                    title: 'El valor a devolver es ' + cambio,
-                    text: 'Lo faltante es: ' + valorAPagar,
+                    title: 'El valor a devolver es: $' + cambio,
+                    text: 'El valor pagado es: $' + valorAPagar,
                     icon: 'info',
                     confirmButtonText: 'Aceptar'
                 });

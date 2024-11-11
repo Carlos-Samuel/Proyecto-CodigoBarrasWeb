@@ -64,12 +64,14 @@
 @endif
 
 @if(HelperPer::checkPermisos(4))
+<!--
 <li class="nav-item">
     <a class="nav-link" href="">
         <i class="fas fa-fw fa-table"></i>
         <span>Informe 3</span>
     </a>
 </li>
+-->
 @endif
 
 @if(HelperPer::checkPermisos(5))
