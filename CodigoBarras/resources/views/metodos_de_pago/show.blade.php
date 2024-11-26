@@ -28,6 +28,10 @@
             <th>Activo</th>
             <td>{{ $metodo->Activo ? 'Sí' : 'No' }}</td>
         </tr>
+        <tr>
+            <th>Efectivo</th>
+            <td>{{ $metodo->Efectivo ? 'Sí' : 'No' }}</td>
+        </tr>
     </table>
     <a href="{{ route('metodos_de_pago.index') }}" class="btn btn-secondary">Volver</a>
 </div>

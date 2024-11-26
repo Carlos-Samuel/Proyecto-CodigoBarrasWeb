@@ -78,7 +78,7 @@
 <li class="nav-item">
     <a class="nav-link" href="{{ route('metodos_de_pago.index') }}">
         <i class="fas fa-fw fa-table"></i>
-        <span>Formas de Pago</span>
+        <span>Medios de Pago</span>
     </a>
 </li>
 @endif

@@ -90,6 +90,7 @@
                 },
                 "dom": 'Bfrtip',
                 "buttons": [
+                    /*
                     {
                         extend: 'copy',
                         title: function() {
@@ -102,6 +103,7 @@
                             return 'Consolidado de ventas del ' + $('#fInicio').val() + ' al ' + $('#fFinal').val();
                         }
                     },
+                    */
                     {
                         extend: 'excel',
                         title: function() {

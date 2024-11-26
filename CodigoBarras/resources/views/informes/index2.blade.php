@@ -38,6 +38,8 @@
         </div>
         <hr>
         <br>
+        <h2><b>Total:</b> <span id="totalSum"></span></h2>
+        <br>
         <table id="tablaInforme2" class="display" style="width:100%">
             <thead>
                 <tr>
@@ -59,9 +61,12 @@
     <script>
         $(document).ready(function() {
 
+
+
             function reloadTable() {
                 $('#tablaInforme2').DataTable().ajax.reload();
             }
+
             function validateDates() {
                 let fInicio = $('#fInicio').val();
                 let fFinal = $('#fFinal').val();
@@ -116,6 +121,7 @@
                 },
                 "dom": 'Bfrtip',
                 "buttons": [
+                    /*
                     {
                         extend: 'copy',
                         title: function() {
@@ -128,6 +134,7 @@
                             return 'Detalle de ventas del ' + $('#fInicio').val() + ' al ' + $('#fFinal').val();
                         }
                     },
+                    */
                     {
                         extend: 'excel',
                         title: function() {
@@ -146,7 +153,18 @@
                             return 'Detalle de ventas del ' + $('#fInicio').val() + ' al ' + $('#fFinal').val();
                         }
                     }
-                ]
+                ],
+                "pageLength": 100,
+                "footerCallback": function (row, data, start, end, display) {
+                let total = 0;
+
+                for (let i = 0; i < data.length; i++) {
+                    let valor = parseFloat(data[i].Cantidad) || 0;
+                    total += valor;
+                }
+
+                $('#totalSum').text('$' + total.toLocaleString('en-US', { minimumFractionDigits: 0 }));
+            }
             });
 
 

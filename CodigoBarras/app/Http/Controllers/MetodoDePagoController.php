@@ -25,7 +25,18 @@ class MetodoDePagoController extends Controller
             'Cuenta' => 'required|max:45',
             'Imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'Activo' => 'required|boolean',
+            'Efectivo' => 'required|boolean',
         ]);
+
+        if ($request->Efectivo) {
+            $metodoExistente = MetodoDePago::where('Efectivo', true)->first();
+            if ($metodoExistente) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Solo puede existir un método de pago como Efectivo.');
+            }
+        }
+    
 
         $data = $request->all();
         if ($request->hasFile('Imagen')) {
@@ -56,7 +67,30 @@ class MetodoDePagoController extends Controller
             'Cuenta' => 'required|max:45',
             'Imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'Activo' => 'required|boolean',
+            'Efectivo' => 'required|boolean',
+        ], [
+            'Descripcion.required' => 'La descripción es obligatoria.',
+            'Descripcion.max' => 'La descripción no puede tener más de 45 caracteres.',
+            'Cuenta.required' => 'La cuenta es obligatoria.',
+            'Cuenta.max' => 'La cuenta no puede tener más de 45 caracteres.',
+            'Imagen.image' => 'La imagen debe ser un archivo válido.',
+            'Imagen.mimes' => 'La imagen debe ser de tipo jpeg, png, jpg, gif o svg.',
+            'Imagen.max' => 'La imagen no puede ser mayor a 2048 KB.',
+            'Activo.required' => 'El campo activo es obligatorio.',
+            'Activo.boolean' => 'El campo activo debe ser verdadero o falso.',
+            'Efectivo.required' => 'El campo efectivo es obligatorio.',
+            'Efectivo.boolean' => 'El campo efectivo debe ser verdadero o falso.',
         ]);
+
+        if ($request->Efectivo) {
+            $metodoExistente = MetodoDePago::where('Efectivo', true)->where('idMetodos_de_pago', '!=', $id)->first();
+            if ($metodoExistente) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Solo puede existir un método de pago como Efectivo.');
+            }
+        }
+    
 
         $metodo = MetodoDePago::find($id);
         $data = $request->all();

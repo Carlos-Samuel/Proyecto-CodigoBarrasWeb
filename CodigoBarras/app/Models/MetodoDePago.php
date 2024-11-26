@@ -17,7 +17,8 @@ class MetodoDePago extends Model
         'Descripcion',
         'Cuenta',
         'Imagen',
-        'Activo'
+        'Activo',
+        'Efectivo'
     ];
 
     public function pagos()

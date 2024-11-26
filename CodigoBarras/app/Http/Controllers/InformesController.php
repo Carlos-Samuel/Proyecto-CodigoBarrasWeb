@@ -85,7 +85,8 @@ class InformesController extends Controller
     
         $data = $dataTable->getData();
         $totalSum = collect($data->data)->sum('Cantidad');
-    
+        
+        /*
         $data->data[] = [
             'Metodo' => 'Total',
             'Prefijo' => '',
@@ -95,6 +96,7 @@ class InformesController extends Controller
             'ValorFactura' => '',
             'Cantidad' => $totalSum
         ];
+        */
     
         return response()->json($data);
     }

@@ -89,6 +89,9 @@
                         <input type="text" class="form-control entrada-pago" data-id="{{ $metodo->idMetodos_de_pago }}" style="height: 100px; font-size: 40px;" disabled>
                     </div>
                 </div>
+                @if ($metodo->Efectivo)
+                    <input type="hidden" id="idEfectivo" value="{{ $metodo->idMetodos_de_pago }}">
+                @endif
                 <br>
             @endforeach
         </div>
@@ -201,6 +204,7 @@
                             $('#numeroFacturaText').val(parte2);
                             $('#fechaText').val(parte3);
                             $('#valorTotalText').val(formatearComoPesosColombianos(parseFloat(parte4)));
+                            $('#pendienteText').val(formatearComoPesosColombianos(parseFloat(parte4)));
 
                             checkOrCreateFactura(parte1, parte2, parte3, parte4)
                             $('#codigoFacturaText').val('');
@@ -268,6 +272,8 @@
                         botonAnular.removeAttribute('disabled');
                         if (response.terminado) {
                             $('.entrada-pago').prop('disabled', true);
+                            $('#inputRecibido').prop('disabled', true);
+                            $('#botonCalcular').prop('disabled', true);
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Factura terminada',
@@ -277,11 +283,15 @@
                             idFactura = response.idFacturas;  
                             llenarValores(response.pagos);
                         } else if (response.exists) {
+                            $('#inputRecibido').removeAttr('disabled');    
+                            $('#botonCalcular').removeAttr('disabled'); 
                             total = valorTotal;
                             idFactura = response.idFacturas;  
                             llenarValores(response.pagos);
                             $('.entrada-pago').removeAttr('disabled');                          
                         } else {
+                            $('#inputRecibido').removeAttr('disabled'); 
+                            $('#botonCalcular').removeAttr('disabled'); 
                             total = valorTotal;
                             idFactura = response.idFacturas;
                             $('.entrada-pago').removeAttr('disabled');
@@ -397,7 +407,6 @@
                     rawValue = 0;
                 }
 
-
                 let valorFormateado = formatearComoPesosColombianos(rawValue);
 
 
@@ -406,55 +415,78 @@
             });
 
             function calcularCambio() {
-                let recibido = parseInt(limpiarNumeros(document.getElementById('inputRecibido').value));
-                let valorAPagar = parseInt(limpiarNumeros(document.getElementById('pendienteText').value));
 
-                let cambio = recibido - valorAPagar;
+                if ($('#idEfectivo').val() == undefined){
+                    alert("Para usar esta opción requiere un medio de pago marcado como efectivo")
+                }else{
 
-                if (isNaN(recibido)){
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error al Calcular Cambio',
-                        text: 'Ingrese cuanto dinero fue entregadó',
-                    });
-                    return ;
-                }
+                    let recibido = parseInt(limpiarNumeros(document.getElementById('inputRecibido').value));
+                    let valorAPagar = parseInt(limpiarNumeros(document.getElementById('pendienteText').value));
 
-                if (isNaN(valorAPagar)){
+                    if (valorAPagar == NaN){
 
-                    valorAPagar = parseInt(document.getElementById('valorTotalText').value);
+                    }
+
+                    let cambio = recibido - valorAPagar;
+
+                    console.log("Valores");
+                    console.log(recibido);
+                    console.log(valorAPagar);
+                    console.log(cambio);
+
+                    if (isNaN(recibido)){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al Calcular Cambio',
+                            text: 'Ingrese cuanto dinero fue entregadó',
+                        });
+                        return ;
+                    }
 
                     if (isNaN(valorAPagar)){
+
+                        valorAPagar = parseInt(document.getElementById('valorTotalText').value);
+
+                        if (isNaN(valorAPagar)){
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error al Calcular Cambio',
+                                text: 'El valor pendiente esta vacio',
+                            });
+                            return ;
+
+                        }
+                    }
+
+                    if (valorAPagar > recibido){
 
                         Swal.fire({
                             icon: 'error',
                             title: 'Error al Calcular Cambio',
-                            text: 'El valor pendiente esta vacio',
+                            text: 'El valor pendiente es mayor que el dinero recibido',
                         });
                         return ;
 
                     }
-                }
 
-                if (valorAPagar > recibido){
-
+                    cambioM = formatearComoPesosColombianos(cambio);
+                    valorAPagarM = formatearComoPesosColombianos(valorAPagar);
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Error al Calcular Cambio',
-                        text: 'El valor pendiente es mayor que el dinero recibido',
+                        title: 'El valor a devolver es: $' + cambioM,
+                        text: 'El valor pagado es: $' + valorAPagarM,
+                        icon: 'info',
+                        confirmButtonText: 'Aceptar'
                     });
-                    return ;
+
+                    document.getElementById('inputRecibido').value = '';
+                    console.log("Samuel");
+                    console.log(valorAPagar);
+                    console.log($('#idEfectivo').val());
+                    $('.entrada-pago[data-id="' + $('#idEfectivo').val() + '"]').val(valorAPagar);
+                    $('.entrada-pago[data-id="' + $('#idEfectivo').val() + '"]').trigger('blur');
 
                 }
-
-                cambio = formatearComoPesosColombianos(cambio);
-                valorAPagar = formatearComoPesosColombianos(valorAPagar);
-                Swal.fire({
-                    title: 'El valor a devolver es: $' + cambio,
-                    text: 'El valor pagado es: $' + valorAPagar,
-                    icon: 'info',
-                    confirmButtonText: 'Aceptar'
-                });
             }
 
         });

@@ -17,9 +17,14 @@ return new class extends Migration
             $table->string('Cuenta', 45)->nullable();
             $table->string('Imagen', 150)->nullable();
             $table->boolean('Activo')->default(true);
+            $table->boolean('Efectivo')->default(true);
             $table->timestamps();
         });
     }
+
+    //ALTER TABLE metodos_de_pago
+    //ADD COLUMN Efectivo BOOLEAN NOT NULL DEFAULT FALSE;
+
 
     /**
      * Reverse the migrations.
