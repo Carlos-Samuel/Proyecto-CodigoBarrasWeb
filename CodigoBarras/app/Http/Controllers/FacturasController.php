@@ -178,6 +178,7 @@ class FacturasController extends Controller
         $facturas = Factura::where('mensajeria', true)
                             ->where('estado', true)
                             ->where('Terminado', false)
+                            ->orderBy('fechaRegistrada', 'asc')
                             ->get();
 
         return DataTables::of($facturas)

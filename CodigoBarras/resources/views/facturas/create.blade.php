@@ -110,10 +110,8 @@
             var idFacturaMensajeria = $("#idFacturaMensajeria").val();
 
             if (idFacturaMensajeria) {
-                console.log("ID de Factura de Mensajería: " + idFacturaMensajeria);
                 obtenerFactura(idFacturaMensajeria);
             }
-
 
             document.getElementById('botonCalcular').addEventListener('click', calcularCambio);
             $('#codigoFacturaText').focus();
@@ -349,11 +347,9 @@
             }
 
             function sumarPagos(){
-                console.log("Entra aqui automaticamente");
                 var sumaPagos = 0;
                 $('.entrada-pago').each(function() {
                     var rawValue = limpiarNumeros($(this).val());
-                    console.log(rawValue);
                     if (rawValue) {
                         sumaPagos += parseFloat(rawValue);
                     }
@@ -498,11 +494,6 @@
 
                     let cambio = recibido - valorAPagar;
 
-                    console.log("Valores");
-                    console.log(recibido);
-                    console.log(valorAPagar);
-                    console.log(cambio);
-
                     if (isNaN(recibido)){
                         Swal.fire({
                             icon: 'error',
@@ -549,9 +540,6 @@
                     });
 
                     document.getElementById('inputRecibido').value = '';
-                    console.log("Samuel");
-                    console.log(valorAPagar);
-                    console.log($('#idEfectivo').val());
                     $('.entrada-pago[data-id="' + $('#idEfectivo').val() + '"]').val(valorAPagar);
                     $('.entrada-pago[data-id="' + $('#idEfectivo').val() + '"]').trigger('blur');
 
