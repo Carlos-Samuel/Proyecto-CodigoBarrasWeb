@@ -40,7 +40,7 @@
             <!-- Main Content -->
             <div id="content">
 
-                @include('partes.topbar')
+                <br>
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">

@@ -21,6 +21,7 @@ class Factura extends Model
         'fechaRegistrada',
         'fechaTerminada',
         'estado',
+        'mensajeria',
         'vtaid'
     ];
 

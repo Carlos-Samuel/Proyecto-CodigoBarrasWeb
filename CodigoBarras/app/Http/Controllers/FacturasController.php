@@ -4,27 +4,30 @@ namespace App\Http\Controllers;
 
 use DateTime;
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Factura;
 use App\Models\PagoFactura;
 use App\Models\MetodoDePago;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 
 class FacturasController extends Controller
 {
-    public function create()
+    public function create($idFacturaMensajeria = null)
     {
         $metodos = MetodoDePago::where('activo', true)->get();
-        return view('facturas.create', compact('metodos'));
-    }
+        return view('facturas.create', compact('metodos', 'idFacturaMensajeria'));
+    }    
 
     public function checkOrCreate(Request $request)
     {
+        $codigo = $request->input('codigo');
         $prefijo = $request->input('prefijo');
         $numFactura = $request->input('numFactura');
-        $fecha = $request->input('fecha');
-        $date = DateTime::createFromFormat('d/m/Y', $fecha);
-        $fechaRegistrada = $date->format('Y-m-d');
+        $fechaRegistrada = $request->input('fecha');
+        //$date = DateTime::createFromFormat('d/m/Y', $fecha);
+        //$fechaRegistrada = $date->format('Y-m-d');
         $valorTotal = $request->input('valorTotal');
         
 
@@ -58,7 +61,7 @@ class FacturasController extends Controller
                 ]);
             }
         } else {
-            $nuevaFactura = Factura::create(['Prefijo' => $prefijo, 'NumFactura' => $numFactura, 'fechaRegistrada' => $fechaRegistrada, 'ValorFactura' => $valorTotal]);
+            $nuevaFactura = Factura::create(['vtaid' => $codigo,'Prefijo' => $prefijo, 'NumFactura' => $numFactura, 'fechaRegistrada' => $fechaRegistrada, 'ValorFactura' => $valorTotal]);
             return response()->json([
                 'idFacturas' => $nuevaFactura->idFacturas,
                 'terminado' => false,
@@ -140,5 +143,52 @@ class FacturasController extends Controller
         ]);
 
     }
+
+    public function mensajeria(Request $request)
+    {
+        $idFactura = $request->input('idFactura');
+
+        $factura = Factura::where('idFacturas', $idFactura)
+                    ->where('estado', true)
+                    ->first();
+
+        if ($factura) {
+            $factura->mensajeria = true;
+            $factura->save();
+
+            return response()->json([
+                'mensaje' => "Envio a mensajeria exitoso"
+            ]);
+        }
+
+        return response()->json([
+            'mensaje' => "Factura no encontrada"
+        ]);
+
+    }
+
+
+    public function indexMensajeria()
+    {
+        return view('facturas.indexMensajeria');
+    }
+
+    public function getDatosDataTableMensajeria()
+    {
+        $facturas = Factura::where('mensajeria', true)
+                            ->where('estado', true)
+                            ->where('Terminado', false)
+                            ->get();
+
+        return DataTables::of($facturas)
+            ->addColumn('editar', function($row){
+                $btn = '<a href="'.route("facturas.create", ['idFacturaMensajeria' => $row->vtaid]).'" class="btn btn-sm btn-secondary">Continuar</a>';
+                return $btn;
+            })
+            ->rawColumns(['editar'])
+            ->make(true);
+                        
+    }
+    
 
 }

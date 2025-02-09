@@ -7,9 +7,12 @@
         <div class="col-md-6">
             <div class="container">
                 <input type="hidden" name="usuarioId" id="usuarioId" value="{{ Auth::id() }}">
+                <input type="hidden" name="idFacturaMensajeria" id="idFacturaMensajeria" value="{{ $idFacturaMensajeria }}">
                 <input id = "codigoFacturaText" type="text" class="form-control" style="height: 60px; font-size: 30px;" placeholder = "Escanear Factura">
                 <br>
                 <button id = "escanearBoton" class="btn btn-primary btn-block mb-3" style="height: 80px; font-size: 40px;" >Procesar</button>
+                <br>
+                <button id = "enviarMensajeria" class="btn btn-success btn-block mb-3" style="height: 80px; font-size: 40px;" disabled>Enviar a Mensajeria</button>
                 <br>
                 <h1 class="text-center">Datos Factura</h1>
                 <br>
@@ -103,6 +106,15 @@
     <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0"></script>
     <script>
         $(document).ready(function() {
+
+            var idFacturaMensajeria = $("#idFacturaMensajeria").val();
+
+            if (idFacturaMensajeria) {
+                console.log("ID de Factura de Mensajería: " + idFacturaMensajeria);
+                obtenerFactura(idFacturaMensajeria);
+            }
+
+
             document.getElementById('botonCalcular').addEventListener('click', calcularCambio);
             $('#codigoFacturaText').focus();
 
@@ -180,89 +192,71 @@
             //    console.log(metodoId);
             //});
 
+
+            function obtenerFactura(codigo) {
+                limpiarInterfaz();
+
+                $.ajax({
+                    url: '/ventas/' + codigo,
+                    method: 'GET',
+                    success: function(response) {
+                        $('#prefijoText').val(response.prefijo.PrfCod);
+                        $('#numeroFacturaText').val(response.VtaNum);
+                        $('#fechaText').val(response.vtafec);
+                        //let total = response.VtaSubTot-response.VtaVlrDes+response.VtaVlrIva-response.VtaRetFte-response.VtaRetIva-response.VtaRetIca+response.VtaImpCon+response.VtaVlrIcn
+                        let total = Math.floor(
+                            parseFloat(response.VtaSubTot) - 
+                            parseFloat(response.VtaVlrDes) + 
+                            parseFloat(response.VtaVlrIva) - 
+                            parseFloat(response.VtaRetFte) - 
+                            parseFloat(response.VtaRetIva) - 
+                            parseFloat(response.VtaRetIca) + 
+                            parseFloat(response.VtaImpCon)
+                        );
+
+                        
+                        console.log("Total");
+                        console.log(response.VtaSubTot);
+                        console.log(response.VtaVlrDes);
+                        console.log(response.VtaVlrIva);
+                        console.log(response.VtaRetFte);
+                        console.log(response.VtaRetIva);
+                        console.log(response.VtaRetIca);
+                        console.log(response.VtaImpCon);
+                        console.log(response.VtaVlrIcn);
+                        
+
+                        console.log(total);
+
+
+                        $('#valorTotalText').val(formatearComoPesosColombianos(parseFloat(total)));
+                        $('#pendienteText').val(formatearComoPesosColombianos(parseFloat(total)));
+
+                        checkOrCreateFactura(codigo, response.prefijo.PrfCod, response.VtaNum, response.vtafec, total)
+                        
+                        $('#codigoFacturaText').val('');
+
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(JSON.parse(xhr.responseText).message);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: JSON.parse(xhr.responseText).message,
+                        });
+                    }
+                });
+
+
+            }
+
+
             $('#escanearBoton').on('click', function() {
-                var codigo = $('#codigoFacturaText').val();
+                var codigo = $('#codigoFacturaText').val().replace(/^\*+|\*+$/g, '');
                 if (codigo === '') {
                     $('#codigoFacturaText').focus();
                 } else {
-                    limpiarInterfaz();
-
-                    $.ajax({
-                        url: '/ventas/' + codigo,
-                        method: 'GET',
-                        success: function(response) {
-                            console.log("Respuesta al procesar");
-                            console.log(response);
-
-                            
-                            $('#prefijoText').val(response.prefijo.PrfCod);
-                            $('#numeroFacturaText').val(response.VtaNum);
-                            $('#fechaText').val(response.vtafec);
-                            let total = response.VtaSubTot-response.VtaVlrDes+response.VtaVlrIva-response.VtaRetFte-response.VtaRetIva-response.VtaRetIca+response.VtaImpCon+response.VtavlrIcn
-                            
-                            console.log("Total");
-                            console.log(response.VtaSubTot);
-                            console.log(response.VtaVlrDes);
-                            console.log(response.VtaVlrIva);
-                            console.log(response.VtaRetFte);
-                            console.log(response.VtaRetIva);
-                            console.log(response.VtaRetIca);
-                            console.log(response.VtaImpCon);
-                            console.log(response.VtaVlrIcn);
-                            console.log(total);
-                            
-                            $('#valorTotalText').val(formatearComoPesosColombianos(parseFloat(total)));
-                            $('#pendienteText').val(formatearComoPesosColombianos(parseFloat(total)));
-
-                            //checkOrCreateFactura(response.prefijo.PrfCod, response.prefijo.VtaNum, response.prefijo.vtafec, total)
-                            
-                            $('#codigoFacturaText').val('');
-
-                        },
-                        error: function(xhr, status, error) {
-                            console.error(JSON.parse(xhr.responseText).message);
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: JSON.parse(xhr.responseText).message,
-                            });
-                        }
-                    });
-
-
-                    /*
-                    try {
-                        var partes = codigo.split("'");
-                        if (partes.length !== 4) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Código en formato incorrecto',
-                                text: 'El código esta incompleto.',
-                            });
-                        }else{
-                            var parte1 = partes[0];
-                            var parte2 = partes[1];
-                            var parte3 = partes[2].replace(/G/g, '/');
-                            var parte4 = partes[3];
-
-                            $('#prefijoText').val(parte1);
-                            $('#numeroFacturaText').val(parte2);
-                            $('#fechaText').val(parte3);
-                            $('#valorTotalText').val(formatearComoPesosColombianos(parseFloat(parte4)));
-                            $('#pendienteText').val(formatearComoPesosColombianos(parseFloat(parte4)));
-
-                            checkOrCreateFactura(parte1, parte2, parte3, parte4)
-                            $('#codigoFacturaText').val('');
-                        }
-                    } catch (error) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error inesperado',
-                            text: 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.',
-                        });
-                        console.error(error);
-                    }
-                    */
+                    obtenerFactura(codigo);
                 }
             });
 
@@ -302,11 +296,12 @@
                 sumarPagos();
             }
 
-            function checkOrCreateFactura(prefijo, numFactura, fecha, valorTotal){
+            function checkOrCreateFactura(codigo, prefijo, numFactura, fecha, valorTotal){
                 $.ajax({
                     url: '/factura/check-or-create',
                     method: 'POST',
                     data: {
+                        codigo: codigo,
                         prefijo: prefijo,
                         numFactura: numFactura,
                         fecha: fecha,
@@ -331,6 +326,7 @@
                         } else if (response.exists) {
                             $('#inputRecibido').removeAttr('disabled');    
                             $('#botonCalcular').removeAttr('disabled'); 
+                            enviarMensajeria.removeAttribute('disabled');
                             total = valorTotal;
                             idFactura = response.idFacturas;  
                             llenarValores(response.pagos);
@@ -338,6 +334,7 @@
                         } else {
                             $('#inputRecibido').removeAttr('disabled'); 
                             $('#botonCalcular').removeAttr('disabled'); 
+                            enviarMensajeria.removeAttribute('disabled');
                             total = valorTotal;
                             idFactura = response.idFacturas;
                             $('.entrada-pago').removeAttr('disabled');
@@ -417,7 +414,7 @@
                 });
 
                 botonAnular.setAttribute('disabled', 'disabled');
-
+                enviarMensajeria.setAttribute('disabled', 'disabled');
             }
 
             $('#botonCerrar').on('click', function() {
@@ -434,6 +431,32 @@
                         Swal.fire({
                             icon: 'success',
                             title: 'Cerrado',
+                            text: response.mensaje,
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                        alert('Ocurrió un error al procesar la solicitud.');
+                    }
+                });
+                
+
+            });
+
+            $('#enviarMensajeria').on('click', function() {
+                
+                $.ajax({
+                    url: '/factura/mensajeria',
+                    method: 'POST',
+                    data: {
+                        idFactura: idFactura,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        limpiarInterfaz();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Enviado',
                             text: response.mensaje,
                         });
                     },

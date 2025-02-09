@@ -49,11 +49,17 @@ Route::middleware(['auth'])->group(function () {
 
     //Facturas
 
-    Route::get('/facturas/permissions', [FacturasController::class, 'create'])->name('facturas.create')->middleware(['check.permisos: 1']);
+    Route::get('/facturas/create/{idFacturaMensajeria?}', [FacturasController::class, 'create'])
+    ->name('facturas.create')
+    ->middleware(['check.permisos: 1']);
+
     Route::post('/factura/check-or-create', [FacturasController::class, 'checkOrCreate'])->middleware(['check.permisos: 1']);
     Route::post('/pago-factura/register', [FacturasController::class, 'registarPago'])->middleware(['check.permisos: 1']);
     Route::post('/factura/anular', [FacturasController::class, 'anular'])->middleware(['check.permisos: 1']);
     Route::post('/factura/cerrar', [FacturasController::class, 'cerrar'])->middleware(['check.permisos: 1']);
+    Route::post('/factura/mensajeria', [FacturasController::class, 'mensajeria'])->middleware(['check.permisos: 1']);
+    Route::get('/factura/indexMensajeria', [FacturasController::class, 'indexMensajeria'])->name('facturas.indexMensajeria')->middleware(['check.permisos: 1']);
+    Route::get('/facturas/datatableMensajeria', [FacturasController::class, 'getDatosDataTableMensajeria'])->name('facturas.datatableMensajeria')->middleware(['check.permisos: 1']);
 
     //Informes
     

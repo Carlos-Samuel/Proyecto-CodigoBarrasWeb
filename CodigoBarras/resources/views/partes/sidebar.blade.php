@@ -33,6 +33,13 @@
     </a>
 </li>
 
+<li class="nav-item">
+    <a class="nav-link" href="{{ route('facturas.indexMensajeria') }}">
+        <i class="fas fa-fw fa-table"></i>
+        <span>Mensajeria</span>
+    </a>
+</li>
+
 <!-- Divider -->
 <hr class="sidebar-divider">
 @endif
@@ -97,6 +104,24 @@
 <hr class="sidebar-divider d-none d-md-block">
 @endif
 
+@if (Auth::check())
+    <div class="sidebar-heading">
+        Usuario
+    </div>
+    <li class="nav-item">
+        <a class="nav-link">
+            <i class="fas fa-fw fa-table"></i>
+            <span>{{ auth()->user()->nombres;}}</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="modal" data-target="#logoutModal">
+            <i class="fas fa-fw fa-table"></i>
+            <span>Logout</span>
+        </a>
+    </li>
+    <hr class="sidebar-divider d-none d-md-block">
+@endif
 <!-- Sidebar Toggler (Sidebar) -->
 <div class="text-center d-none d-md-inline">
     <button class="rounded-circle border-0" id="sidebarToggle"></button>
