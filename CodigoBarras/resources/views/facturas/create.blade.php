@@ -186,6 +186,51 @@
                     $('#codigoFacturaText').focus();
                 } else {
                     limpiarInterfaz();
+
+                    $.ajax({
+                        url: '/ventas/' + codigo,
+                        method: 'GET',
+                        success: function(response) {
+                            console.log("Respuesta al procesar");
+                            console.log(response);
+
+                            
+                            $('#prefijoText').val(response.prefijo.PrfCod);
+                            $('#numeroFacturaText').val(response.VtaNum);
+                            $('#fechaText').val(response.vtafec);
+                            let total = response.VtaSubTot-response.VtaVlrDes+response.VtaVlrIva-response.VtaRetFte-response.VtaRetIva-response.VtaRetIca+response.VtaImpCon+response.VtavlrIcn
+                            
+                            console.log("Total");
+                            console.log(response.VtaSubTot);
+                            console.log(response.VtaVlrDes);
+                            console.log(response.VtaVlrIva);
+                            console.log(response.VtaRetFte);
+                            console.log(response.VtaRetIva);
+                            console.log(response.VtaRetIca);
+                            console.log(response.VtaImpCon);
+                            console.log(response.VtaVlrIcn);
+                            console.log(total);
+                            
+                            $('#valorTotalText').val(formatearComoPesosColombianos(parseFloat(total)));
+                            $('#pendienteText').val(formatearComoPesosColombianos(parseFloat(total)));
+
+                            //checkOrCreateFactura(response.prefijo.PrfCod, response.prefijo.VtaNum, response.prefijo.vtafec, total)
+                            
+                            $('#codigoFacturaText').val('');
+
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(JSON.parse(xhr.responseText).message);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: JSON.parse(xhr.responseText).message,
+                            });
+                        }
+                    });
+
+
+                    /*
                     try {
                         var partes = codigo.split("'");
                         if (partes.length !== 4) {
@@ -217,6 +262,7 @@
                         });
                         console.error(error);
                     }
+                    */
                 }
             });
 

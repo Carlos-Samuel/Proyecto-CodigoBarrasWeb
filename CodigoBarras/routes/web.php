@@ -9,6 +9,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\InformesController;
+use App\Http\Controllers\VentasController;
 
 
 
@@ -61,4 +62,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/informes/informe2', [InformesController::class, 'indexInforme2'])->name('informes.informe2')->middleware(['check.permisos: 3']);
     Route::get('/informes/dataTableInforme2', [InformesController::class, 'getDataTableInforme2'])->name('informes.dataTableInforme2')->middleware(['check.permisos: 3']);
+
+    //Base de datos de agil
+
+    Route::get('/ventas/{id}', [VentasController::class, 'show']);
+
 });
