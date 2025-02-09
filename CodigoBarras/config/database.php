@@ -63,6 +63,20 @@ return [
             ]) : [],
         ],
 
+        'mysql_agil' => [ // Segunda conexión
+            'driver' => 'mysql',
+            'host' => env('DB_HOST_AGIL', '127.0.0.1'),
+            'port' => env('DB_PORT_AGIL', '3307'),
+            'database' => env('DB_DATABASE_AGIL', 'labunidos'),
+            'username' => env('DB_USERNAME_AGIL', 'root'),
+            'password' => env('DB_PASSWORD_AGIL', 'root'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),

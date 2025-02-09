@@ -20,7 +20,9 @@ class Factura extends Model
         'Terminado',
         'fechaRegistrada',
         'fechaTerminada',
-        'estado'
+        'estado',
+        'mensajeria',
+        'vtaid'
     ];
 
     public function pagos()
