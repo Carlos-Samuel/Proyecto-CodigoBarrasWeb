@@ -158,6 +158,10 @@ Pasos para instalar en windows server
 
 9) Revisar que los servicios se inicien automaticamente al arrancar el servidor revisando los servicios en 'services.msc'
 
+10) Ejecutar esto php artisan storage:link
+
+11) Configurar el puerto para acceder al proyecto
+
 win + R
 
 services.msv
