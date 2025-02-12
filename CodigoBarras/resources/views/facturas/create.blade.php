@@ -208,24 +208,8 @@
                             parseFloat(response.VtaVlrIva) - 
                             parseFloat(response.VtaRetFte) - 
                             parseFloat(response.VtaRetIva) - 
-                            parseFloat(response.VtaRetIca) + 
-                            parseFloat(response.VtaImpCon)
-                        );
-
-                        
-                        console.log("Total");
-                        console.log(response.VtaSubTot);
-                        console.log(response.VtaVlrDes);
-                        console.log(response.VtaVlrIva);
-                        console.log(response.VtaRetFte);
-                        console.log(response.VtaRetIva);
-                        console.log(response.VtaRetIca);
-                        console.log(response.VtaImpCon);
-                        console.log(response.VtaVlrIcn);
-                        
-
-                        console.log(total);
-
+                            parseFloat(response.VtaRetIca)
+                        );                        
 
                         $('#valorTotalText').val(formatearComoPesosColombianos(parseFloat(total)));
                         $('#pendienteText').val(formatearComoPesosColombianos(parseFloat(total)));
