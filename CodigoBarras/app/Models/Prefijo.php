@@ -11,12 +11,12 @@ class Prefijo extends Model
 
     protected $connection = 'mysql_agil'; // Conexión a la segunda base de datos
     protected $table = 'prefijo'; // Nombre de la tabla en la base de datos
-    protected $primaryKey = 'PrfId'; // Clave primaria
+    protected $primaryKey = 'prfid'; // Clave primaria
     public $incrementing = true; // AutoIncrement
     public $timestamps = false; // No tiene timestamps por defecto
 
     protected $fillable = [
-        'PrfCod', 'PrfNom', 'prfnoact', 'ctoid', 'PrfPos', 'PrfOtr', 'PrfIng',
+        'prfcod', 'PrfNom', 'prfnoact', 'ctoid', 'PrfPos', 'PrfOtr', 'PrfIng',
         'PrfPag', 'PrfMen', 'PrfSinImp', 'PrfNoVta', 'PrfBas', 'PrfCom', 'VentDiaw',
         'CiuId', 'EmpId', 'prftal', 'prfdespa', 'prfremc', 'tabprepos', 'tabprecli',
         'prfgto', 'prfnocxc', 'prfnocxcig', 'prfplz0nocar', 'prfact', 'prfimpincluido',
@@ -29,6 +29,6 @@ class Prefijo extends Model
      */
     public function ventas()
     {
-        return $this->hasMany(Venta::class, 'PrfId', 'PrfId');
+        return $this->hasMany(Venta::class, 'prfid', 'prfid');
     }
 }

@@ -12,7 +12,7 @@
                 <br>
                 <button id = "escanearBoton" class="btn btn-primary btn-block mb-3" style="height: 80px; font-size: 40px;" >Procesar</button>
                 <br>
-                <button id = "enviarMensajeria" class="btn btn-success btn-block mb-3" style="height: 80px; font-size: 40px;" disabled>Enviar a Mensajeria</button>
+                <button id = "enviarMensajeria" class="btn btn-success btn-block mb-3" style="height: 80px; font-size: 40px;" disabled>Mensajeria</button>
                 <br>
                 <h1 class="text-center">Datos Factura</h1>
                 <br>
@@ -198,23 +198,23 @@
                     url: '/ventas/' + codigo,
                     method: 'GET',
                     success: function(response) {
-                        $('#prefijoText').val(response.prefijo.PrfCod);
-                        $('#numeroFacturaText').val(response.VtaNum);
+                        $('#prefijoText').val(response.prefijo.prfcod);
+                        $('#numeroFacturaText').val(response.vtanum);
                         $('#fechaText').val(response.vtafec);
                         //let total = response.VtaSubTot-response.VtaVlrDes+response.VtaVlrIva-response.VtaRetFte-response.VtaRetIva-response.VtaRetIca+response.VtaImpCon+response.VtaVlrIcn
                         let total = Math.floor(
-                            parseFloat(response.VtaSubTot) - 
-                            parseFloat(response.VtaVlrDes) + 
-                            parseFloat(response.VtaVlrIva) - 
-                            parseFloat(response.VtaRetFte) - 
-                            parseFloat(response.VtaRetIva) - 
-                            parseFloat(response.VtaRetIca)
+                            parseFloat(response.vtasubtot) - 
+                            parseFloat(response.vtavlrdes) + 
+                            parseFloat(response.vtavlriva) - 
+                            parseFloat(response.vtaretfte) - 
+                            parseFloat(response.vtaretiva) - 
+                            parseFloat(response.vtaretica)
                         );                        
 
                         $('#valorTotalText').val(formatearComoPesosColombianos(parseFloat(total)));
                         $('#pendienteText').val(formatearComoPesosColombianos(parseFloat(total)));
 
-                        checkOrCreateFactura(codigo, response.prefijo.PrfCod, response.VtaNum, response.vtafec, total)
+                        checkOrCreateFactura(codigo, response.prefijo.prfcod, response.vtanum, response.vtafec, total)
                         
                         $('#codigoFacturaText').val('');
 
