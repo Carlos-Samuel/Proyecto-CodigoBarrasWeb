@@ -233,12 +233,54 @@
             }
 
 
+            function obtenerCodigo(prefijo, numero) {
+                limpiarInterfaz();
+
+                $.ajax({
+                    url: '/obtenerCodigo/' + prefijo + '/' + numero,
+                    method: 'GET',
+                    success: function(response) {
+
+                        obtenerFactura(response.vtaid);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(JSON.parse(xhr.responseText).message);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: JSON.parse(xhr.responseText).message,
+                        });
+                    }
+                });
+
+
+            }
+
+
+
             $('#escanearBoton').on('click', function() {
-                var codigo = $('#codigoFacturaText').val().replace(/^\*+|\*+$/g, '');
-                if (codigo === '') {
+                var datos = $('#codigoFacturaText').val().replace(/^\*+|\*+$/g, '');
+                if (datos === '') {
                     $('#codigoFacturaText').focus();
                 } else {
-                    obtenerFactura(codigo);
+
+                    var partes = datos.split("/");
+
+                    if (partes.length !== 2){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Codigo en formato incorrecto',
+                            text: 'El codigo esta mal generado o leido',
+                        });
+
+                    }else{
+                        var prefijo = partes[0];
+                        var numero = partes[1];
+
+                        let codigo = obtenerCodigo(prefijo, numero);
+
+                    }
+
                 }
             });
 

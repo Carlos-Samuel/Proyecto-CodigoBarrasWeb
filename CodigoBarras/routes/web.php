@@ -72,5 +72,6 @@ Route::middleware(['auth'])->group(function () {
     //Base de datos de agil
 
     Route::get('/ventas/{id}', [VentasController::class, 'show']);
+    Route::get('/obtenerCodigo/{prefijo}/{numero}', [VentasController::class, 'obtenerCodigo']);
 
 });
