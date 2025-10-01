@@ -32,6 +32,7 @@ class FacturasController extends Controller
         
 
         $factura = Factura::where('NumFactura', $numFactura)
+                    ->where('Prefijo', $prefijo)
                     ->where('estado', true)
                     ->first();
 
