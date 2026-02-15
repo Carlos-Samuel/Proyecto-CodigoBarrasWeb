@@ -323,13 +323,13 @@ class ComposerStaticInit5734e5f3250c026d299f7d52855b3323
         ),
         'Spatie\\LaravelIgnition\\' => 
         array (
-            0 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/laravel-ignition',
-            1 => __DIR__ . '/..' . '/spatie/laravel-ignition/src',
+            0 => __DIR__ . '/..' . '/spatie/laravel-ignition/src',
+            1 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/laravel-ignition',
         ),
         'Spatie\\Ignition\\' => 
         array (
-            0 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/ignition',
-            1 => __DIR__ . '/..' . '/spatie/ignition/src',
+            0 => __DIR__ . '/..' . '/spatie/ignition/src',
+            1 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/ignition',
         ),
         'Spatie\\FlareClient\\' => 
         array (
@@ -555,7 +555,7 @@ class ComposerStaticInit5734e5f3250c026d299f7d52855b3323
         'App\\Http\\Controllers\\MetodoDePagoController' => __DIR__ . '/../..' . '/app/Http/Controllers/MetodoDePagoController.php',
         'App\\Http\\Controllers\\PermisosController' => __DIR__ . '/../..' . '/app/Http/Controllers/PermisosController.php',
         'App\\Http\\Controllers\\UsuariosController' => __DIR__ . '/../..' . '/app/Http/Controllers/UsuariosController.php',
-        'App\\Http\\Controllers\\VentaDetalleController' => __DIR__ . '/../..' . '/app/Http/Controllers/VentaDetalleController.php',
+        'App\\Http\\Controllers\\VentasController' => __DIR__ . '/../..' . '/app/Http/Controllers/VentasController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
         'App\\Http\\Middleware\\CheckPermisos' => __DIR__ . '/../..' . '/app/Http/Middleware/CheckPermisos.php',
@@ -574,9 +574,10 @@ class ComposerStaticInit5734e5f3250c026d299f7d52855b3323
         'App\\Models\\MetodoDePago' => __DIR__ . '/../..' . '/app/Models/MetodoDePago.php',
         'App\\Models\\PagoFactura' => __DIR__ . '/../..' . '/app/Models/PagoFactura.php',
         'App\\Models\\Permiso' => __DIR__ . '/../..' . '/app/Models/Permiso.php',
+        'App\\Models\\Prefijo' => __DIR__ . '/../..' . '/app/Models/Prefijo.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Models\\UsuariosHasPermisos' => __DIR__ . '/../..' . '/app/Models/UsuariosHasPermisos.php',
-        'App\\Models\\VentaDetalle' => __DIR__ . '/../..' . '/app/Models/VentaDetalle.php',
+        'App\\Models\\Venta' => __DIR__ . '/../..' . '/app/Models/Venta.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
         'App\\Providers\\BroadcastServiceProvider' => __DIR__ . '/../..' . '/app/Providers/BroadcastServiceProvider.php',
