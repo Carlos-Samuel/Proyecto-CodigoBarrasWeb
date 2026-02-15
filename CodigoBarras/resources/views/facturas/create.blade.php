@@ -264,7 +264,7 @@
                     $('#codigoFacturaText').focus();
                 } else {
 
-                    var partes = datos.split("/");
+                    var partes = datos.split("'");
 
                     if (partes.length !== 2){
                         Swal.fire({
