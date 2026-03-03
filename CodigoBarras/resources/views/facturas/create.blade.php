@@ -198,18 +198,48 @@
                     url: '/ventas/' + codigo,
                     method: 'GET',
                     success: function(response) {
-                        $('#prefijoText').val(response.prefijo.prfcod);
-                        $('#numeroFacturaText').val(response.vtanum);
+
+                        let prfcod = response.prefijo.prfcod ? response.prefijo.prfcod : response.prefijo.PrfCod;
+                        let vtanum = response.vtanum ? response.vtanum : response.VtaNum;
+
+                        let vtasubtot = response.vtasubtot ? response.vtasubtot : response.VtaSubTot;
+                        let vtavlrdes = response.vtavlrdes ? response.vtavlrdes : response.VtaVlrDes;
+                        let vtavlriva = response.vtavlriva ? response.vtavlriva : response.VtaVlrIva;
+                        let vtaretfte = response.vtaretfte ? response.vtaretfte : response.VtaRetFte;
+                        let vtaretiva = response.vtaretiva ? response.vtaretiva : response.VtaRetIva;   
+                        let vtaretica = response.vtaretica ? response.vtaretica : response.VtaRetIca;   
+
+                        $('#prefijoText').val(prfcod);
+                        $('#numeroFacturaText').val(vtanum);
                         $('#fechaText').val(response.vtafec);
                         //let total = response.VtaSubTot-response.VtaVlrDes+response.VtaVlrIva-response.VtaRetFte-response.VtaRetIva-response.VtaRetIca+response.VtaImpCon+response.VtaVlrIcn
+                        
+                        const n = (v) => parseFloat(v ?? 0);
+
                         let total = Math.floor(
-                            parseFloat(response.vtasubtot) - 
-                            parseFloat(response.vtavlrdes) + 
-                            parseFloat(response.vtavlriva) - 
-                            parseFloat(response.vtaretfte) - 
-                            parseFloat(response.vtaretiva) - 
-                            parseFloat(response.vtaretica)
-                        );                        
+                            n(vtasubtot) -
+                            n(vtavlrdes) +
+                            n(vtavlriva) -
+                            n(vtaretfte) -
+                            n(vtaretiva) -
+                            n(vtaretica)
+                        );                    
+
+                        console.log('Total calculado: ' + total);
+                        console.log(vtasubtot);
+                        console.log(vtavlrdes);
+                        console.log(vtavlriva);
+                        console.log(vtaretfte);
+                        console.log(vtaretiva);
+                        console.log(vtaretica);
+                        console.log("Estos son los datos en formato");
+                        console.log(n(vtasubtot));
+                        console.log(n(vtavlrdes));
+                        console.log(n(vtavlriva));
+                        console.log(n(vtaretfte));
+                        console.log(n(vtaretiva));
+                        console.log(n(vtaretica));
+
 
                         $('#valorTotalText').val(formatearComoPesosColombianos(parseFloat(total)));
                         $('#pendienteText').val(formatearComoPesosColombianos(parseFloat(total)));

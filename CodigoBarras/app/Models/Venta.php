@@ -17,7 +17,7 @@ class Venta extends Model
     public $timestamps = false; // No tiene timestamps por defecto
 
     protected $fillable = [
-        'VtaNum', 'prfid', 'vtafec', 'vtahor', 'TerId', 'TerNom', 'TerDir', 'TerTel',
+        'VtaNum', 'PrfId', 'vtafec', 'vtahor', 'TerId', 'TerNom', 'TerDir', 'TerTel',
         'vtadocref', 'BodId', 'VenId', 'VtaPlazo', 'VtaDesPor', 'VtaSubTot', 'VtaVlrDes', 
         'VtaVlrIva', 'VtaFltVlr', 'VtaRetFte', 'VtaRetIca', 'VtaRetIva', 'VtaImpCon', 
         'VtaEstado', 'VtaRetPor', 'VtaPrecio', 'VtaImpre', 'SucId', 'CtoId', 'CiuId', 
@@ -34,7 +34,13 @@ class Venta extends Model
      */
     public function prefijo()
     {
-        return $this->belongsTo(Prefijo::class, 'prfid', 'prfid');
+        return $this->belongsTo(Prefijo::class, 'PrfId', 'Prfid');
+    }
+
+
+    public function detalles()
+    {
+        return $this->hasMany(VentaDet::class, 'VtaId', 'vtaid');
     }
 
 }
