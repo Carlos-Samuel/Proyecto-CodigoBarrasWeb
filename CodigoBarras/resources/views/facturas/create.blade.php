@@ -225,22 +225,6 @@
                             n(vtaretica)
                         );                    
 
-                        console.log('Total calculado: ' + total);
-                        console.log(vtasubtot);
-                        console.log(vtavlrdes);
-                        console.log(vtavlriva);
-                        console.log(vtaretfte);
-                        console.log(vtaretiva);
-                        console.log(vtaretica);
-                        console.log("Estos son los datos en formato");
-                        console.log(n(vtasubtot));
-                        console.log(n(vtavlrdes));
-                        console.log(n(vtavlriva));
-                        console.log(n(vtaretfte));
-                        console.log(n(vtaretiva));
-                        console.log(n(vtaretica));
-
-
                         $('#valorTotalText').val(formatearComoPesosColombianos(parseFloat(total)));
                         $('#pendienteText').val(formatearComoPesosColombianos(parseFloat(total)));
 
@@ -262,7 +246,7 @@
 
             }
 
-
+            //Este es el ejemplo 01'10666
             function obtenerCodigo(prefijo, numero) {
                 limpiarInterfaz();
 

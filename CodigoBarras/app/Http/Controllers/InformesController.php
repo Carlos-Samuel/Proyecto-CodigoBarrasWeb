@@ -55,50 +55,42 @@ class InformesController extends Controller
 
     public function getDataTableInforme2(Request $request)
     {
-        $metodoDePago = $request->get('metodoDePago');
+        $metodoDePago = $request->get('metodoDePago', -1);
+
+        // Normaliza fechas (incluye todo el día final)
         $fInicio = $request->get('fInicio');
-        $fFinal = $request->get('fFinal');
-    
-        $query = PagoFactura::selectRaw(
-            'metodos_de_pago.Descripcion as Metodo, 
-            facturas.Prefijo as Prefijo, 
-            facturas.NumFactura as NumFactura, 
-            DATE(facturas.fechaRegistrada) as fechaRegistrada, 
-            facturas.fechaTerminada as fechaTerminada, 
-            facturas.ValorFactura as ValorFactura, 
-            pagos_facturas.Cantidad as Cantidad'
-        )
-        ->join('facturas', 'pagos_facturas.Facturas_idFacturas', '=', 'facturas.idFacturas')
-        ->join('metodos_de_pago', 'pagos_facturas.Metodos_de_pago_idMetodos_de_pago', '=', 'metodos_de_pago.idMetodos_de_pago')
-        ->where('facturas.estado', true)
-        ->where('facturas.Terminado', true)
-        ->whereBetween('facturas.fechaRegistrada', [$fInicio, $fFinal]);
-    
-        if ($metodoDePago != -1) {
+        $fFinal  = $request->get('fFinal');
+
+        $inicio = Carbon::parse($fInicio)->startOfDay();
+        $final  = Carbon::parse($fFinal)->endOfDay();
+
+        $query = PagoFactura::query()
+            ->selectRaw("
+                metodos_de_pago.Descripcion as Metodo,
+                facturas.Prefijo as Prefijo,
+                facturas.NumFactura as NumFactura,
+                DATE(facturas.fechaRegistrada) as fechaRegistrada,
+                facturas.fechaTerminada as fechaTerminada,
+                facturas.ValorFactura as ValorFactura,
+                pagos_facturas.Cantidad as Cantidad
+            ")
+            ->join('facturas', 'pagos_facturas.Facturas_idFacturas', '=', 'facturas.idFacturas')
+            ->join('metodos_de_pago', 'pagos_facturas.Metodos_de_pago_idMetodos_de_pago', '=', 'metodos_de_pago.idMetodos_de_pago')
+            ->where('facturas.estado', true)
+            ->where('facturas.Terminado', true)
+            ->whereBetween('facturas.fechaRegistrada', [$inicio, $final]);
+
+        if ((string)$metodoDePago !== '-1') {
             $query->where('pagos_facturas.Metodos_de_pago_idMetodos_de_pago', $metodoDePago);
         }
-    
-        $query->orderBy('Metodo');
-    
-        $dataTable = DataTables::of($query)
+
+        // Total global (mismas condiciones, sin paginar)
+        $totalGlobal = (clone $query)->sum('pagos_facturas.Cantidad');
+
+        return DataTables::of($query)
+            ->orderColumn('Metodo', 'metodos_de_pago.Descripcion $1') // opcional: orden real
+            ->with('totalGlobal', (float)$totalGlobal)
             ->make(true);
-    
-        $data = $dataTable->getData();
-        $totalSum = collect($data->data)->sum('Cantidad');
-        
-        /*
-        $data->data[] = [
-            'Metodo' => 'Total',
-            'Prefijo' => '',
-            'NumFactura' => '',
-            'fechaRegistrada' => '',
-            'fechaTerminada' => '',
-            'ValorFactura' => '',
-            'Cantidad' => $totalSum
-        ];
-        */
-    
-        return response()->json($data);
     }
     
     

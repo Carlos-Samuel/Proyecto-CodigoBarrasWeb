@@ -61,8 +61,6 @@
     <script>
         $(document).ready(function() {
 
-
-
             function reloadTable() {
                 $('#tablaInforme2').DataTable().ajax.reload();
             }
@@ -92,7 +90,6 @@
 
             $('#tablaInforme2').DataTable({
                 "processing": true,
-                "serverSide": true,
                 "ajax": {
                     "url": "{{ route('informes.dataTableInforme2') }}",
                     "data": function (d) {
@@ -121,20 +118,6 @@
                 },
                 "dom": 'Bfrtip',
                 "buttons": [
-                    /*
-                    {
-                        extend: 'copy',
-                        title: function() {
-                            return 'Detalle de ventas del ' + $('#fInicio').val() + ' al ' + $('#fFinal').val();
-                        }
-                    },
-                    {
-                        extend: 'csv',
-                        title: function() {
-                            return 'Detalle de ventas del ' + $('#fInicio').val() + ' al ' + $('#fFinal').val();
-                        }
-                    },
-                    */
                     {
                         extend: 'excel',
                         title: function() {
@@ -154,19 +137,13 @@
                         }
                     }
                 ],
-                "pageLength": 100,
-                "footerCallback": function (row, data, start, end, display) {
-                let total = 0;
-
-                for (let i = 0; i < data.length; i++) {
-                    let valor = parseFloat(data[i].Cantidad) || 0;
-                    total += valor;
-                }
-
-                $('#totalSum').text('$' + total.toLocaleString('en-US', { minimumFractionDigits: 0 }));
-            }
+                "pageLength": 100
             });
 
+            $('#tablaInforme2').on('xhr.dt', function (e, settings, json) {
+                let total = parseFloat(json.totalGlobal) || 0;
+                $('#totalSum').text('$' + total.toLocaleString('en-US', { minimumFractionDigits: 0 }));
+            });
 
 
         });
