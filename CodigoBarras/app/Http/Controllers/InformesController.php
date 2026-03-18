@@ -7,6 +7,7 @@ use App\Models\MetodoDePago;
 use App\Models\PagoFactura;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use Carbon\Carbon;
 
 class InformesController extends Controller
 {
